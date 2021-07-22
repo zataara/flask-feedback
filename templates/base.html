@@ -8,9 +8,25 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <header>
-        
-    </header>
+    <nav>
+        <div class="container">
+            <a href='/' class='navbar-brand text-light'>Flask Feedback</a>
+            <ul class='nav navbar-nav flex-row float-right'>
+                {% if session['user_id'] %}
+                <li class='nav-item'>
+                    <a href='logout' class='nav-link pre-3 text-light'>Logout</a>
+                </li>
+                {% else %}
+                <li class='nav-item'>
+                    <a href='login' class='nav-link pre-3 text-light'>Login</a>
+                </li>
+                <li class='nav-item'>
+                    <a href='register' class='nav-link pre-3 text-light'>Register</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
     {% block body %}
 
     {% endblock %}
