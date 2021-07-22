@@ -19,6 +19,6 @@ db.create_all()
 @app.route('/')
 def root():
     '''Homepage directory'''
-    return redirect('/')
+    return render_template('index.html')
 
 #
