@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User
 from forms import UserForm, LoginForm
 from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import Unauthorized
 
 
 app = Flask(__name__)
@@ -46,9 +47,14 @@ def register_user():
     else:
         return render_template('register.html', form=form)
 
-@app.route('/secret')
-def secret():
-    return render_template('secret.html')
+@app.route('/users/<username>')
+def show_user(username):
+
+    if 'username' not in session or username != session['username']:
+        raise Unauthorized()
+    user = User.query.get(username)
+
+    return render_template('user.html', user=user)
 
 
 
@@ -71,7 +77,7 @@ def login_user():
         if user: 
             flash(f'Welcome back {user.username}!', 'primary')
             session['username'] = user.username
-            return redirect('/secret')
+            return redirect(f'/users/{user.username}')
         else:
             form.username.errors = ['Invalid username/password.']
     return render_template('login.html', form=form)
