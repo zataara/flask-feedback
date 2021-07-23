@@ -11,7 +11,7 @@ def connect_db(app):
 ## Model is used as a placefiller reference. Make sure to change all 'Model' instances to a variable of your chooseing.
 
 class User(db.Model):
-    '''Database model for Models'''
+    '''Database model for Users'''
 
     __tablename__ = 'users'
 
@@ -32,6 +32,8 @@ class User(db.Model):
                             nullable=False)
     last_name = db.Column(db.String(30),
                             nullable=False)
+
+    feedback = db.relationship('Feedback', backref='user', cascade='all,delete')
 
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
@@ -60,7 +62,25 @@ class User(db.Model):
             return u
         else:
             return False
-    
 
-    
+class Feedback(db.Model):
+    '''db model for Feedback provided by a User'''
 
+    __tablename__ = 'feedback'
+
+    def __repr__(self):
+        
+        f = self
+        return f'<Feedback id={f.id} title={f.title} content={f.content} username={f.username}>'
+
+    id= db.Column(db.Integer,
+                            nullable=False,
+                            unique=True,
+                            primary_key=True)
+    title = db.Column(db.String(100),
+                            nullable=False)
+    content = db.Column(db.Text,
+                            nullable=False)
+    username = db.Column(db.String(20),
+                            db.ForeignKey('users.username'),
+                            nullable=False)
