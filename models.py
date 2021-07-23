@@ -20,12 +20,10 @@ class User(db.Model):
         u = self
         return f'<User {u.id} >'
 
-    id = db.Column(db.Integer,
-                    primary_key=True,
-                    autoincrement=True)
     username = db.Column(db.String(20),
                             nullable=False,
-                            unique=True)
+                            unique=True,
+                            primary_key=True)
     password = db.Column(db.String,
                             nullable=False)
     email = db.Column(db.String(50),
