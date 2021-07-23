@@ -52,5 +52,17 @@ class User(db.Model):
         db.session.add(new_user)
         return new_user
 
+    @classmethod
+    def authenticate(cls, username, pwd):
+        '''Check username and password against hashed password stored in db'''
+
+        u = User.query.filter_by(username=username).first()
+
+        if u and bcrypt.check_password_hash(u.password,pwd):
+            return u
+        else:
+            return False
+    
+
     
 
