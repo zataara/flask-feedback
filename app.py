@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
-from forms import UserForm, LoginForm
+from models import db, connect_db, User, Feedback
+from forms import UserForm, LoginForm, FeedbackForm
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 
@@ -53,8 +53,10 @@ def show_user(username):
     if 'username' not in session or username != session['username']:
         raise Unauthorized()
     user = User.query.get(username)
+    form = FeedbackForm()
 
-    return render_template('user.html', user=user)
+
+    return render_template('user.html', user=user, form=form)
 
 
 
@@ -81,3 +83,17 @@ def login_user():
         else:
             form.username.errors = ['Invalid username/password.']
     return render_template('login.html', form=form)
+
+
+@app.route('/users/<username>/delete', methods=['POST'])
+def delete_user(username):
+    '''Delete user account'''
+    if 'username' not in session or username != session['username']:
+        flash('Please login first!', 'danger')
+        raise Unauthorized()
+    user = User.query.get(username)
+    db.session.delete(user)
+    db.session.commit()
+    session.pop('username')
+    
+    return redirect('/login')
